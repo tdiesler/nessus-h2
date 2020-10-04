@@ -1,6 +1,6 @@
 {
-  "jdbcServerURL" : "jdbc:h2:tcp://localhost:8084/var/opt/h2",
-  "jdbcURL" : "jdbc:h2:file:/var/opt/h2/nessus",
+  "jdbcServerURL" : "jdbc:h2:tcp://localhost:8084/nessus",
+  "jdbcURL" : "jdbc:h2:/tmp/h2db/nessus",
   "jdbcUser" : "h2",
   "jdbcPass" : ""
 }

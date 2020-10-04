@@ -76,15 +76,18 @@ public class DBServer extends AbstractBot<DBServerOptions> {
 	
     public Server startServer(Config config) throws Exception {
     	String serverURL = config.getParameter("jdbcServerURL", String.class);
+    	String jdbcURL = config.getParameter("jdbcURL", String.class);
     	AssertState.notNull(serverURL, "Null jdbcServerURL");
+    	AssertState.notNull(jdbcURL, "Null jdbcURL");
     	AssertState.isTrue(serverURL.startsWith("jdbc:h2:tcp://"), "Protocol not supported: " + serverURL);
     	URL url = new URL(serverURL.replace("jdbc:h2:tcp://", "http://"));
     	String host = url.getHost();
     	String port = "" + url.getPort();
-    	String baseDir = url.getPath();
+    	String dbpath = url.getPath();
+		String baseDir = jdbcURL.substring(jdbcURL.indexOf('/'), jdbcURL.indexOf(dbpath));
     	AssertState.isTrue("localhost".equals(host) || "127.0.0.1".equals(host), "Host not supported: " + host);
         Server server = Server.createTcpServer("-baseDir", baseDir, "-tcpPort", port, "-tcpAllowOthers").start();
-        logInfo("H2 Server: {}{}", server.getURL(), baseDir);
+        logInfo(String.format("H2 Server: jdbc:h2:%s%s", server.getURL(), dbpath));
         return server;
     }
     

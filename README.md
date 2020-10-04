@@ -1,25 +1,32 @@
 ## Nessus H2
 
-Run the image 
+You can spin up an [H2](http://h2database.com) database like this ...
 
 ```
 docker rm -f dbsrv
 docker run --detach \
     --name dbsrv \
     -p 8084:8084 \
-    -v h2vol:/var/opt/h2 \
-    -e JDBC_SERVER_URL=jdbc:h2:tcp://localhost:8084/var/opt/h2 \
-    -e JDBC_URL=jdbc:h2:file:/var/opt/h2/nessus \
-    -e JDBC_USER=h2 \
-    -e JDBC_PASS=h2 \
+    -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:8084/nessus" \
+    -e JDBC_URL="jdbc:h2:/tmp/h2db/nessus" \
+    -e JDBC_USER="h2" \
+    -e JDBC_PASS="" \
     nessusio/nessus-h2
+```
 
-docker logs -f dbsrv
+or with volume persistence, like this ... 
 
-docker exec dbsrv tail -n1000 -f nessus-h2/debug.log
-
-docker cp dbsrv:nessus-h2/debug.log .
-tail -n 1000 debug.log
+```
+docker rm -f dbsrv
+docker run --detach \
+    --name dbsrv \
+    -p 8084:8084 \
+    -v h2vol:/tmp/h2db \
+    -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:8084/nessus" \
+    -e JDBC_URL="jdbc:h2:/tmp/h2db/nessus" \
+    -e JDBC_USER="h2" \
+    -e JDBC_PASS="" \
+    nessusio/nessus-h2
 ```
 
 Enjoy!
