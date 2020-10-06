@@ -44,19 +44,25 @@ public final class ConnectionFactory {
         Connection con = threadLocal.get();
         AssertArg.isTrue(con == null, "Connection already created by this thread");
         
-        DBServer.initConfig(config);
+        DBServer.initConfig(LOG, config);
 
-		String jdbcURL = config.getParameter("jdbcURL", String.class);
+		String jdbcServerUrl = config.getParameter("jdbcServerUrl", String.class);
+		String jdbcUrl = config.getParameter("jdbcUrl", String.class);
         String jdbcUser = config.getParameter("jdbcUser", String.class);
         String jdbcPass = config.getParameter("jdbcPass", "");
         
         if (firstTime) {
-            LOG.info(String.format("jdbcURL:  %s", jdbcURL));
-            LOG.info(String.format("jdbcUser: %s", jdbcUser));
-            LOG.info(String.format("jdbcPass: %s", jdbcPass.length() > 0 ? "*******" : ""));
+        	
+        	if (jdbcServerUrl != null) 
+        		LOG.debug(String.format("jdbcServerUrl:  %s", jdbcServerUrl));
+        	
+            LOG.debug(String.format("jdbcUrl:  %s", jdbcUrl));
+            LOG.debug(String.format("jdbcUser: %s", jdbcUser));
+            LOG.debug(String.format("jdbcPass: %s", jdbcPass.length() > 0 ? "*******" : ""));
+            
             firstTime = false;
         }
-        con = DriverManager.getConnection(jdbcURL, jdbcUser, jdbcPass);
+        con = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
         
         AssertArg.notNull(con, "Cannot obtain connection");
         

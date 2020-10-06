@@ -4,23 +4,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.event.Level;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import io.nessus.common.AbstractTest;
 import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
+import io.nessus.common.testing.AbstractTest;
 
 public class DBConfigTest extends AbstractTest {
-
-    @Before
-    public void before() throws Exception {
-        setRootLevel(Level.WARN);
-    }
 
     @Test
     public void testDefault() throws Exception {

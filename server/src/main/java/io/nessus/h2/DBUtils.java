@@ -1,4 +1,4 @@
-package io.nessus.common.utils;
+package io.nessus.h2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import io.nessus.common.AssertState;
 import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
-import io.nessus.h2.ConnectionFactory;
 
 public final class DBUtils {
 

@@ -1,7 +1,7 @@
 FROM nessusio/centosj
 
-COPY bin /nessus-h2/bin
-COPY config /nessus-h2/config
-COPY lib /nessus-h2/lib
+COPY bin /h2db/bin
+COPY config /h2db/config
+COPY lib /h2db/lib
 
-ENTRYPOINT ["/nessus-h2/bin/dbsrv.sh"]
+ENTRYPOINT ["/h2db/bin/dbsrv.sh"]

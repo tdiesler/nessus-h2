@@ -6,15 +6,14 @@ import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 
-import io.nessus.common.AbstractTest;
+import io.nessus.common.testing.AbstractTest;
 
-public abstract class AbstractDBTest extends AbstractTest {
+public abstract class AbstractH2Test extends AbstractTest {
 
     private ConnectionFactory conFactory;
     
     @Before
     public void before() throws Exception {
-    	super.before();
         createConnection();
     }
 
@@ -24,7 +23,6 @@ public abstract class AbstractDBTest extends AbstractTest {
         if (con != null) {
             con.close();
         }
-        super.after();
     }
 
     protected final ConnectionFactory createConnectionFactory() {
