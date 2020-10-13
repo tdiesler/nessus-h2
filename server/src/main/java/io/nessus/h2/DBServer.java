@@ -91,14 +91,16 @@ public class DBServer extends AbstractDBMain<BasicConfig, DBServerOptions> {
     	String jdbcUrl = config.getParameter("jdbcUrl", String.class);
     	AssertState.notNull(serverUrl, "Null jdbcServerUrl");
     	AssertState.notNull(jdbcUrl, "Null jdbcUrl");
+    	AssertState.isTrue(jdbcUrl.startsWith("jdbc:h2:/"), "Invalid local jdbcUrl: " + jdbcUrl);
     	AssertState.isTrue(serverUrl.startsWith("jdbc:h2:tcp://"), "Protocol not supported: " + serverUrl);
     	URL url = new URL(serverUrl.replace("jdbc:h2:tcp://", "http://"));
     	String host = url.getHost();
     	String port = "" + url.getPort();
     	String dbpath = url.getPath();
+    	AssertState.isTrue("localhost".equals(host) || "127.0.0.1".equals(host), "Host not supported: " + serverUrl);
+    	AssertState.isTrue(dbpath.length() > 0, "No database path: " + serverUrl);
 		String baseDir = jdbcUrl.substring(jdbcUrl.indexOf('/'), jdbcUrl.indexOf(dbpath));
-    	AssertState.isTrue("localhost".equals(host) || "127.0.0.1".equals(host), "Host not supported: " + host);
-        Server server = Server.createTcpServer("-baseDir", baseDir, "-tcpPort", port, "-tcpAllowOthers").start();
+		Server server = Server.createTcpServer("-baseDir", baseDir, "-tcpPort", port, "-tcpAllowOthers").start();
         logInfo(String.format("H2 Server: jdbc:h2:%s%s", server.getURL(), dbpath));
         return server;
     }
