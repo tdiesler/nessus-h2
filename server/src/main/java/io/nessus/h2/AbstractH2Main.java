@@ -1,25 +1,17 @@
 package io.nessus.h2;
 
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
 import io.nessus.common.main.AbstractMain;
 import io.nessus.common.main.AbstractOptions;
 
-public abstract class AbstractDBMain<C extends Config, T extends AbstractOptions> extends AbstractMain<C, T> {
+public abstract class AbstractH2Main<C extends Config, T extends AbstractOptions> extends AbstractMain<C, T> {
 
     protected final ConnectionFactory conFactory;
     
-    @SuppressWarnings("unchecked")
-	public AbstractDBMain(URL cfgurl) throws IOException {
-        this((C) new BasicConfig(cfgurl));
-    }
-
-    public AbstractDBMain(C config) {
+    public AbstractH2Main(C config) {
         super(config);
         this.conFactory = new ConnectionFactory(config);
     }

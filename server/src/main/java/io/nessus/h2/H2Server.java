@@ -3,39 +3,33 @@ package io.nessus.h2;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiFunction;
 
 import org.h2.tools.Server;
-import org.slf4j.Logger;
 
 import io.nessus.common.AssertState;
-import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
 
-public class DBServer extends AbstractDBMain<BasicConfig, DBServerOptions> {
+public class H2Server extends AbstractH2Main<H2Config, H2Options> {
 
     public static void main(String... args) throws Exception {
 
-    	URL cfgurl = DBServer.class.getResource("/dbconfig.json");
+    	URL cfgurl = H2Server.class.getResource("/dbconfig.json");
     	
-    	new DBServer(cfgurl)
+    	new H2Server(new H2Config(cfgurl))
     		.start(args);
     }
 
-    DBServer(URL cfgurl) throws IOException {
-        super(cfgurl);
+    H2Server(H2Config config) throws IOException {
+        super(config);
     }
 
     @Override
-    protected DBServerOptions createOptions() {
-        return new DBServerOptions();
+    protected H2Options createOptions() {
+        return new H2Options();
     }
 
     @Override
-    protected void doStart(DBServerOptions options) throws Exception {
+    protected void doStart(H2Options options) throws Exception {
         
         Connection con = getConnection();
 
@@ -48,44 +42,6 @@ public class DBServer extends AbstractDBMain<BasicConfig, DBServerOptions> {
         startServer(config);
     }
 
-	static void initConfig(Logger log, Config config) {
-		
-		Map<String, String> mapping = new LinkedHashMap<>();
-		mapping.put("jdbcServerUrl", "JDBC_SERVER_URL");
-		mapping.put("jdbcUrl", "JDBC_URL");
-		mapping.put("jdbcUser", "JDBC_USER");
-		mapping.put("jdbcPassword", "JDBC_PASSWORD");
-		
-		BiFunction<String, String, String> logval = (k, v) -> {
-			if (v == null) return null;
-			boolean ispw = k.toLowerCase().contains("pass");
-			v = ispw && v.length() > 0  ? "*****" : v;
-			return v;
-		};
-		
-		// Override with env vars
-		
-		for (Entry<String, String> en : mapping.entrySet()) {
-			String key = en.getKey();
-			String value = System.getenv(en.getValue());
-			if (value != null) {
-				log.debug("Env {}: {}", en.getValue(), logval.apply(key, value));
-				config.putParameter(key, value);
-			}
-		}
-		
-		// Override with system properties
-		
-		for (Entry<String, String> en : mapping.entrySet()) {
-			String key = en.getKey();
-			String value = System.getProperty(key);
-			if (value != null) {
-				log.debug("Prop {}: {}", key, logval.apply(key, value));
-				config.putParameter(en.getKey(), value);
-			}
-		}
-	}
-	
     public Server startServer(Config config) throws Exception {
     	String serverUrl = config.getParameter("jdbcServerUrl", String.class);
     	String jdbcUrl = config.getParameter("jdbcUrl", String.class);

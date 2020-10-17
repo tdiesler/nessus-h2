@@ -13,7 +13,7 @@ import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
 import io.nessus.common.testing.AbstractTest;
 
-public class DBConfigTest extends AbstractTest<BasicConfig> {
+public class H2ConfigTest extends AbstractTest<BasicConfig> {
 
     @Test
     public void testDefault() throws Exception {

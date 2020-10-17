@@ -1,4 +1,4 @@
-package io.nessus.h2;
+package io.nessus.h2.testing;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,6 +8,7 @@ import org.junit.Before;
 
 import io.nessus.common.BasicConfig;
 import io.nessus.common.testing.AbstractTest;
+import io.nessus.h2.ConnectionFactory;
 
 public abstract class AbstractH2Test extends AbstractTest<BasicConfig> {
 

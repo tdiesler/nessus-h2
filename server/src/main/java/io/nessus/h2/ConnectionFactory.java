@@ -20,23 +20,18 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.nessus.common.AssertArg;
 import io.nessus.common.Config;
+import io.nessus.common.ConfigSupport;
 
-public final class ConnectionFactory {
+public final class ConnectionFactory extends ConfigSupport<Config> { 
 
-	private static Logger LOG = LoggerFactory.getLogger(ConnectionFactory.class);
-    
     private final static ThreadLocal<Connection> threadLocal = new ThreadLocal<>();
-    private final Config config;
     
     private static boolean firstTime = true;
     
     public ConnectionFactory(Config config) {
-        this.config = config;
+        super(config);
     }
     
     public Connection createConnection() throws SQLException {
@@ -44,8 +39,6 @@ public final class ConnectionFactory {
         Connection con = threadLocal.get();
         AssertArg.isTrue(con == null, "Connection already created by this thread");
         
-        DBServer.initConfig(LOG, config);
-
 		String jdbcServerUrl = config.getParameter("jdbcServerUrl", String.class);
 		String jdbcUrl = config.getParameter("jdbcUrl", String.class);
         String jdbcUser = config.getParameter("jdbcUser", String.class);
@@ -54,11 +47,11 @@ public final class ConnectionFactory {
         if (firstTime) {
         	
         	if (jdbcServerUrl != null) 
-        		LOG.debug(String.format("jdbcServerUrl:  %s", jdbcServerUrl));
+        		logDebug(String.format("jdbcServerUrl:  %s", jdbcServerUrl));
         	
-            LOG.debug(String.format("jdbcUrl:  %s", jdbcUrl));
-            LOG.debug(String.format("jdbcUser: %s", jdbcUser));
-            LOG.debug(String.format("jdbcPassword: %s", jdbcPass.length() > 0 ? "*******" : ""));
+            logDebug(String.format("jdbcUrl:  %s", jdbcUrl));
+            logDebug(String.format("jdbcUser: %s", jdbcUser));
+            logDebug(String.format("jdbcPassword: %s", jdbcPass.length() > 0 ? "*******" : ""));
             
             firstTime = false;
         }
@@ -96,7 +89,7 @@ public final class ConnectionFactory {
         
         // Delegate methods below 
         
-        public <T> T unwrap(Class<T> iface) throws SQLException {
+        public <I> I unwrap(Class<I> iface) throws SQLException {
             return con.unwrap(iface);
         }
 

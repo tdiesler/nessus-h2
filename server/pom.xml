@@ -73,7 +73,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>io.nessus.h2.DBServer</mainClass>
+                            <mainClass>io.nessus.h2.H2Server</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Implementation-Version>${project.version}</Implementation-Version>
@@ -144,6 +144,17 @@
                             <goal>build</goal>
                         </goals>
                         <phase>install</phase>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <skipPush>${skipPush}</skipPush>
+                            <skipTag>true</skipTag>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
