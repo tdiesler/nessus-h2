@@ -10,7 +10,7 @@ docker run --detach \
     -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:9092/nessus" \
     -e JDBC_URL="jdbc:h2:/var/h2db/nessus" \
     -e JDBC_USER="h2" \
-    -e JDBC_PASS="" \
+    -e JDBC_PASSWORD="" \
     nessusio/nessus-h2
     
 docker logs -f h2
@@ -30,7 +30,7 @@ docker run --detach \
     -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:9092/nessus" \
     -e JDBC_URL="jdbc:h2:/var/h2db/nessus" \
     -e JDBC_USER="h2" \
-    -e JDBC_PASS="" \
+    -e JDBC_PASSWORD="" \
     nessusio/nessus-h2
 ```
 

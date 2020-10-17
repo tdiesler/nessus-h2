@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 
+import io.nessus.common.BasicConfig;
 import io.nessus.common.testing.AbstractTest;
 
-public abstract class AbstractH2Test extends AbstractTest {
+public abstract class AbstractH2Test extends AbstractTest<BasicConfig> {
 
     private ConnectionFactory conFactory;
     

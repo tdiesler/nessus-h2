@@ -54,7 +54,7 @@ public class DBServer extends AbstractDBMain<BasicConfig, DBServerOptions> {
 		mapping.put("jdbcServerUrl", "JDBC_SERVER_URL");
 		mapping.put("jdbcUrl", "JDBC_URL");
 		mapping.put("jdbcUser", "JDBC_USER");
-		mapping.put("jdbcPass", "JDBC_PASS");
+		mapping.put("jdbcPassword", "JDBC_PASSWORD");
 		
 		BiFunction<String, String, String> logval = (k, v) -> {
 			if (v == null) return null;

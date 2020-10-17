@@ -13,7 +13,7 @@ import io.nessus.common.BasicConfig;
 import io.nessus.common.Config;
 import io.nessus.common.testing.AbstractTest;
 
-public class DBConfigTest extends AbstractTest {
+public class DBConfigTest extends AbstractTest<BasicConfig> {
 
     @Test
     public void testDefault() throws Exception {
@@ -21,7 +21,7 @@ public class DBConfigTest extends AbstractTest {
     	Map<String, String> params = new LinkedHashMap<>();
     	params.put("jdbcURL", "jdbc:h2:tcp://127.0.0.1:8092/h2");
     	params.put("jdbcUser", "h2");
-    	params.put("jdbcPass", "");
+    	params.put("jdbcPassword", "");
     	
     	Config exp = new BasicConfig(params);
     	

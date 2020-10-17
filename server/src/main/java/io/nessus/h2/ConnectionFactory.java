@@ -49,7 +49,7 @@ public final class ConnectionFactory {
 		String jdbcServerUrl = config.getParameter("jdbcServerUrl", String.class);
 		String jdbcUrl = config.getParameter("jdbcUrl", String.class);
         String jdbcUser = config.getParameter("jdbcUser", String.class);
-        String jdbcPass = config.getParameter("jdbcPass", "");
+        String jdbcPass = config.getParameter("jdbcPassword", "");
         
         if (firstTime) {
         	
@@ -58,7 +58,7 @@ public final class ConnectionFactory {
         	
             LOG.debug(String.format("jdbcUrl:  %s", jdbcUrl));
             LOG.debug(String.format("jdbcUser: %s", jdbcUser));
-            LOG.debug(String.format("jdbcPass: %s", jdbcPass.length() > 0 ? "*******" : ""));
+            LOG.debug(String.format("jdbcPassword: %s", jdbcPass.length() > 0 ? "*******" : ""));
             
             firstTime = false;
         }
