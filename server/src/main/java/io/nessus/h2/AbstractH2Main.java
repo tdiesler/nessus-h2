@@ -2,16 +2,15 @@ package io.nessus.h2;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 
-import io.nessus.common.Config;
 import io.nessus.common.main.AbstractMain;
-import io.nessus.common.main.AbstractOptions;
 
-public abstract class AbstractH2Main<C extends Config, T extends AbstractOptions> extends AbstractMain<C, T> {
+public abstract class AbstractH2Main extends AbstractMain<H2Config, H2Options> {
 
     protected final ConnectionFactory conFactory;
     
-    public AbstractH2Main(C config) {
+    public AbstractH2Main(H2Config config) {
         super(config);
         this.conFactory = new ConnectionFactory(config);
     }
@@ -27,9 +26,13 @@ public abstract class AbstractH2Main<C extends Config, T extends AbstractOptions
 	@Override
 	public void startInternal(String... args) throws Exception {
 		
+	    H2Options options = parseArguments(args);
+        
+        prepare(new LinkedHashMap<>(), options);
+        
         try (Connection con = createConnection()) {
 
-        	super.startInternal(args);
+            doStart(options);
         }
 	}
 }

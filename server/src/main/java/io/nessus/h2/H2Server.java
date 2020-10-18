@@ -9,7 +9,7 @@ import org.h2.tools.Server;
 import io.nessus.common.AssertState;
 import io.nessus.common.Config;
 
-public class H2Server extends AbstractH2Main<H2Config, H2Options> {
+public class H2Server extends AbstractH2Main {
 
     public static void main(String... args) throws Exception {
 
