@@ -16,11 +16,19 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.nessus.common.AssertArg;
+import io.nessus.common.CheckedExceptionWrapper;
 import io.nessus.common.Config;
 import io.nessus.common.ConfigSupport;
 
@@ -28,43 +36,10 @@ public final class ConnectionFactory extends ConfigSupport<Config> {
 
     private final static ThreadLocal<Connection> threadLocal = new ThreadLocal<>();
     
-    private static boolean firstTime = true;
-    
     public ConnectionFactory(Config config) {
         super(config);
     }
     
-    public Connection createConnection() throws SQLException {
-        
-        Connection con = threadLocal.get();
-        AssertArg.isTrue(con == null, "Connection already created by this thread");
-        
-		String jdbcServerUrl = config.getParameter("jdbcServerUrl", String.class);
-		String jdbcUrl = config.getParameter("jdbcUrl", String.class);
-        String jdbcUser = config.getParameter("jdbcUser", String.class);
-        String jdbcPass = config.getParameter("jdbcPassword", "");
-        
-        if (firstTime) {
-        	
-        	if (jdbcServerUrl != null) 
-        		logDebug(String.format("jdbcServerUrl:  %s", jdbcServerUrl));
-        	
-            logDebug(String.format("jdbcUrl:  %s", jdbcUrl));
-            logDebug(String.format("jdbcUser: %s", jdbcUser));
-            logDebug(String.format("jdbcPassword: %s", jdbcPass.length() > 0 ? "*******" : ""));
-            
-            firstTime = false;
-        }
-        con = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
-        
-        AssertArg.notNull(con, "Cannot obtain connection");
-        
-        ConnectionWrapper wrapper = new ConnectionWrapper(con);
-        threadLocal.set(wrapper);
-        
-        return wrapper;
-    }
-
     public boolean hasConnection() {
         return threadLocal.get() != null;
     }
@@ -73,6 +48,84 @@ public final class ConnectionFactory extends ConfigSupport<Config> {
         return threadLocal.get();
     }
 
+    public void setConnection(Connection con) {
+        threadLocal.set(con);
+    }
+
+    public Connection createConnection() throws SQLException {
+        
+        Connection con = threadLocal.get();
+        AssertArg.isTrue(con == null, "Connection already created by this thread");
+
+        con = createConnectionInternal();
+        AssertArg.notNull(con, "Cannot obtain connection");
+        
+        ConnectionWrapper wrapper = new ConnectionWrapper(con);
+        threadLocal.set(wrapper);
+        
+        return wrapper;
+    }
+
+	public Connection createConnection(Duration timeout) throws TimeoutException {
+		AssertArg.notNull(timeout, "Null timeout");
+		
+        Connection con = threadLocal.get();
+        AssertArg.isTrue(con == null, "Connection already created by this thread");
+        
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<Connection> future = executor.submit(() -> {
+			Connection aux = null;
+			while (aux == null) {
+				try {
+					aux = createConnectionInternal();
+				} catch (SQLException ex) {
+					logError("{}", ex.toString());
+					sleepSafe(500);
+				}
+			}
+			return aux;
+		});
+		
+		try {
+			
+			con = future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+			
+		} catch (TimeoutException ex) {
+			throw ex;
+		} catch (InterruptedException | ExecutionException ex) {
+			throw CheckedExceptionWrapper.create(ex);
+		}
+		
+        AssertArg.notNull(con, "Cannot obtain connection");
+        
+        ConnectionWrapper wrapper = new ConnectionWrapper(con);
+        threadLocal.set(wrapper);
+        
+        return wrapper;
+	}
+	
+    private Connection createConnectionInternal() throws SQLException {
+        
+		String jdbcUrl = config.getParameter("jdbcUrl", String.class);
+        String jdbcUser = config.getParameter("jdbcUser", String.class);
+        String jdbcPass = config.getParameter("jdbcPassword", "");
+        
+        Connection con = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPass);
+        
+        AssertArg.notNull(con, "Cannot obtain connection");
+        
+        ConnectionWrapper wrapper = new ConnectionWrapper(con);
+        return wrapper;
+    }
+    
+    private void sleepSafe(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+    }
+    
     public class ConnectionWrapper implements Connection {
         
         final Connection con;

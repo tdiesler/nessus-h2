@@ -1,0 +1,11 @@
+##################################################################
+# H2 Properties 
+
+jdbcServerUrl: jdbc:h2:tcp://localhost:9092/nessus
+
+jdbcUrl: jdbc:h2:/tmp/h2db/nessus
+
+jdbcUser: h2
+
+jdbcPassword:
+

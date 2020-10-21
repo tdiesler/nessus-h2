@@ -13,7 +13,7 @@ public class H2Server extends AbstractH2Main {
 
     public static void main(String... args) throws Exception {
 
-    	URL cfgurl = H2Server.class.getResource("/dbconfig.json");
+    	URL cfgurl = H2Server.class.getResource("/dbconfig.yaml");
     	
     	new H2Server(new H2Config(cfgurl))
     		.start(args);
