@@ -48,10 +48,6 @@ public final class ConnectionFactory extends ConfigSupport<Config> {
         return threadLocal.get();
     }
 
-    public void setConnection(Connection con) {
-        threadLocal.set(con);
-    }
-
     public Connection createConnection() throws SQLException {
         
         Connection con = threadLocal.get();

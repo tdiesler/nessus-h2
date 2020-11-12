@@ -1,4 +1,4 @@
-FROM nessusio/centosj
+FROM azul/zulu-openjdk-centos:8
 
 COPY bin /h2db/bin
 COPY lib /h2db/lib
