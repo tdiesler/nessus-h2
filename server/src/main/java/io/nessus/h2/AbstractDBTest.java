@@ -33,8 +33,9 @@ public abstract class AbstractDBTest<T extends Config> extends AbstractTest<T> {
 	@Override
     @SuppressWarnings("unchecked")
 	protected T createConfig() throws IOException {
-    	URL cfgurl = getClass().getResource("/dbconfig.yaml");
+    	URL cfgurl = getClass().getResource("/h2config.yaml");
     	BasicConfig config = new BasicConfig(cfgurl);
+    	config.putParameter("jdbcUrl", "jdbc:h2:file:/tmp/h2db/nessus");
         config.addService(new BasicLogService());
 		return (T) config;
 	}

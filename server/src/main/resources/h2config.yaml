@@ -3,7 +3,7 @@
 
 jdbcServerUrl: jdbc:h2:tcp://localhost:9092/nessus
 
-jdbcUrl: jdbc:h2:/tmp/h2db/nessus
+jdbcUrl: jdbc:h2:file:/var/h2db/nessus
 
 jdbcUser: h2
 

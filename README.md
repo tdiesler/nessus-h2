@@ -8,7 +8,7 @@ docker run --detach \
     --name h2 \
     -p 9092:9092 \
     -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:9092/nessus" \
-    -e JDBC_URL="jdbc:h2:/var/h2db/nessus" \
+    -e JDBC_URL="jdbc:h2:file:/var/h2db/nessus" \
     -e JDBC_USER="h2" \
     -e JDBC_PASSWORD="" \
     nessusio/nessus-h2
@@ -28,7 +28,7 @@ docker run --detach \
     -p 9092:9092 \
     -v h2vol:/var/h2db \
     -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:9092/nessus" \
-    -e JDBC_URL="jdbc:h2:/var/h2db/nessus" \
+    -e JDBC_URL="jdbc:h2:file:/var/h2db/nessus" \
     -e JDBC_USER="h2" \
     -e JDBC_PASSWORD="" \
     nessusio/nessus-h2
@@ -43,7 +43,7 @@ docker run --detach \
     -p 9092:9092 \
     -p 7091:7091 \
     -e JDBC_SERVER_URL="jdbc:h2:tcp://localhost:9092/nessus" \
-    -e JDBC_URL="jdbc:h2:/var/h2db/nessus" \
+    -e JDBC_URL="jdbc:h2:file:/var/h2db/nessus" \
     -e JDBC_USER="h2" \
     -e JDBC_PASSWORD="" \
     -e JMX_REMOTE=true \

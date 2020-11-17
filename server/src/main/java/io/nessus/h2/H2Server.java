@@ -13,7 +13,7 @@ public class H2Server extends AbstractH2Main {
 
     public static void main(String... args) throws Exception {
 
-    	URL cfgurl = H2Server.class.getResource("/dbconfig.yaml");
+    	URL cfgurl = H2Server.class.getResource("/h2config.yaml");
     	
     	new H2Server(new H2Config(cfgurl))
     		.start(args);
@@ -47,12 +47,14 @@ public class H2Server extends AbstractH2Main {
     	String jdbcUrl = config.getParameter("jdbcUrl", String.class);
     	AssertState.notNull(serverUrl, "Null jdbcServerUrl");
     	AssertState.notNull(jdbcUrl, "Null jdbcUrl");
-    	AssertState.isTrue(jdbcUrl.startsWith("jdbc:h2:/"), "Invalid local jdbcUrl: " + jdbcUrl);
-    	AssertState.isTrue(serverUrl.startsWith("jdbc:h2:tcp://"), "Protocol not supported: " + serverUrl);
-    	URL url = new URL(serverUrl.replace("jdbc:h2:tcp://", "http://"));
-    	String host = url.getHost();
-    	String port = "" + url.getPort();
-    	String dbpath = url.getPath();
+    	AssertState.isTrue(jdbcUrl.startsWith("jdbc:h2:file:"), "Invalid local jdbcUrl: " + jdbcUrl);
+    	AssertState.isTrue(serverUrl.startsWith("jdbc:h2:tcp:"), "Protocol not supported: " + serverUrl);
+    	String auxUrlSpec = serverUrl.replace("jdbc:h2:tcp:", "");
+    	if (auxUrlSpec.startsWith("//")) auxUrlSpec = auxUrlSpec.substring(2);
+    	URL auxUrl = new URL("http://" + auxUrlSpec);
+    	String host = auxUrl.getHost();
+    	String port = "" + auxUrl.getPort();
+    	String dbpath = auxUrl.getPath();
     	AssertState.isTrue("localhost".equals(host) || "127.0.0.1".equals(host), "Host not supported: " + serverUrl);
     	AssertState.isTrue(dbpath.length() > 0, "No database path: " + serverUrl);
 		String baseDir = jdbcUrl.substring(jdbcUrl.indexOf('/'), jdbcUrl.indexOf(dbpath));
